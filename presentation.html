@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetics of Reality | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.75);
+            --accent: #ffb8d2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #050505;
+            overflow: hidden;
+        }
+
+        /* 3D Canvas Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Smooth Scroll Container */
+        main {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            width: 100vw;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        main::-webkit-scrollbar { display: none; }
+
+        /* Slide Setup */
+        section {
+            height: 100vh;
+            width: 100vw;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Карточки слева */
+            padding: 5vw 5vw 5vw 12vw; /* Отступы для левого края */
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Ken Burns Cinematic Background */
+        .bg-layer {
+            position: absolute;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            z-index: -1;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .bg-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.55) contrast(1.1) saturate(1.2);
+            transform: scale(1.1);
+            transition: transform 10s ease-out;
+            will-change: transform;
+        }
+
+        section.active .bg-img {
+            transform: scale(1);
+        }
+
+        /* Premium Glassmorphism Card */
+        .glass-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.35);
+            border-right: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 2rem;
+            padding: 4rem 4.5rem;
+            max-width: 650px;
+            text-align: left; 
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(60px) scale(0.95);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        section.active .glass-card {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Typography */
+        .tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: block;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            transform: translateZ(30px);
+        }
+
+        h2 {
+            font-weight: 700;
+            font-size: clamp(3rem, 5.5vw, 4.5rem);
+            line-height: 1.05;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transform: translateZ(50px);
+        }
+
+        p {
+            font-weight: 300;
+            font-size: clamp(1.1rem, 1.3vw, 1.25rem);
+            line-height: 1.7;
+            color: var(--text-muted);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            transform: translateZ(20px);
+        }
+
+        /* Mobile Adaptation */
+        @media (max-width: 900px) {
+            section {
+                justify-content: center;
+                padding: 5vw;
+            }
+            .glass-card { 
+                padding: 3rem 2rem;
+                border-radius: 1.5rem;
+                text-align: center;
+            }
+            .tag { margin-bottom: 1rem; }
+            h2 { margin-bottom: 1.5rem; }
+            .glass-card, .tag, h2, p { transform: none !important; }
+            section.active .glass-card { transform: translateY(0) !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <main id="scroll-container">
+        <!-- Slide 1: Intro -->
+        <section class="active">
+            <div class="bg-layer">
+                <img class="bg-img" src="./Img/image.png" alt="Epic Nature">
+            </div>
+            <div class="glass-card tilt-element">
+                <span class="tag">01 // Aesthetics of Reality</span>
+                <h2>Magic of<br>Our World</h2>
+                <p>Mind-blowing reality that will absolutely take your breath away.</p>
+            </div>
+        </section>
+
+        <!-- Slide 2: Bioluminescence -->
+        <section>
+            <div class="bg-layer">
+                <!-- Рабочая ссылка на изображение биолюминесценции -->
+                <img class="bg-img" src="./Img/ocean.jpg" alt="Bioluminescence">
+            </div>
+            <div class="glass-card tilt-element">
+                <span class="tag">02 // Vaadhoo, Maldives</span>
+                <h2>Sea of<br>Stars</h2>
+                <p>At night, the beaches of Vaadhoo Island glow neon-blue. As waves touch the shore, the water literally erupts in light due to bioluminescent phytoplankton. Imagine swimming in a liquid night sky.</p>
+            </div>
+        </section>
+
+        <!-- Slide 3: Pink Lake -->
+        <section>
+            <div class="bg-layer">
+                <!-- Рабочая ссылка на изображение розового озера -->
+                <img class="bg-img" src="./Img/bubble_gum.jpg" alt="Pink Lake">
+            </div>
+            <div class="glass-card tilt-element">
+                <span class="tag">03 // Lake Hillier, Australia</span>
+                <h2>Bubblegum<br>Lake</h2>
+                <p>Lake Hillier looks as if someone poured millions of gallons of strawberry milkshake right onto an island. The craziest part? The water stays bright pink even if you scoop it into a glass bottle!</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        const sections = document.querySelectorAll('section');
+        const observerOptions = {
+            root: document.querySelector('#scroll-container'),
+            threshold: 0.6 
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+
+        const tiltElements = document.querySelectorAll('.tilt-element');
+        
+        if (window.innerWidth > 900) {
+            tiltElements.forEach(el => {
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -10; 
+                    const rotateY = ((x - centerX) / centerX) * 10;
+                    
+                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1)`;
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
+                    el.style.transition = 'transform 0.5s ease';
+                });
+
+                el.addEventListener('mouseenter', () => {
+                    el.style.transition = 'none'; 
+                });
+            });
+        }
+
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+        container.appendChild(renderer.domElement);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 900;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 3;
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) - 0.5;
+            mouseY = (event.clientY / window.innerHeight) - 0.5;
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            particlesMesh.rotation.y = elapsedTime * 0.03;
+            particlesMesh.rotation.x = elapsedTime * 0.015;
+
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.02;
+            camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.02;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
