@@ -7,7 +7,7 @@
     <title>Aesthetics of Reality</title>
 
     <link rel="icon"
-        href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext y='.9em' font-size='90'%3E✨%3C/text%3E%3C/svg%3E">
+        href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23ffb8d2'/%3E%3Cstop offset='100%25' stop-color='%2388dcff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='40' fill='url(%23g)' opacity='0.9'/%3E%3Ccircle cx='35' cy='35' r='12' fill='%23ffffff' opacity='0.5'/%3E%3Cpath d='M20,50 Q50,85 80,50' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,7 +66,7 @@
             will-change: opacity;
         }
 
-        /* --- Canvas & Noise --- */
+        /* --- Canvas, Particles & Noise --- */
         #webgl-canvas {
             position: fixed;
             top: 0;
@@ -74,6 +74,16 @@
             width: 100vw;
             height: 100vh;
             z-index: 1;
+            pointer-events: none;
+        }
+
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
             pointer-events: none;
         }
 
@@ -86,6 +96,8 @@
             pointer-events: none;
             z-index: 100;
             opacity: 0.04;
+            transform: translateZ(0);
+            /* Аппаратное ускорение для шума */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
@@ -268,6 +280,10 @@
     <div class="eyelid eyelid-bottom"></div>
 
     <canvas id="webgl-canvas"></canvas>
+
+    <!-- Ambient Particles Layer -->
+    <div id="tsparticles" class="ui-element"></div>
+
     <div class="noise"></div>
     <div class="hint ui-element">Scroll or Swipe &middot; Hold to Explore</div>
 
@@ -316,15 +332,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/split-type"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
 
     <script>
-        // --- Setup Core Constants ---
         const isMobile = window.innerWidth <= 768;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         let currentSlide = 0;
         let isAnimating = false;
+        let renderThreejs = true;
         const splitTextElements = new SplitType('.split', { types: 'chars, words' });
+
+        // --- Configs for Ambient Particles ---
+        const configSlide1 = {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ["#ffffff", "#ffb8d2"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+                size: { value: 2.5, random: true, anim: { enable: true, speed: 2, size_min: 0.1, sync: false } },
+                move: { enable: true, speed: 0.4, direction: "none", random: true, out_mode: "out" }
+            },
+            detectRetina: true
+        };
 
         // --- Velocity & Mouse Tracking ---
         let currentMouse = new THREE.Vector2(0, 0);
@@ -342,7 +373,6 @@
             currentMouse.y = 1.0 - (e.clientY / window.innerHeight);
         });
 
-        // --- WebGL Background & Preloader ---
         const canvas = document.getElementById('webgl-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -360,10 +390,11 @@
                 onComplete: () => {
                     animateText(0);
                     document.querySelectorAll('.eyelid').forEach(el => el.remove());
+                    // Оптимизация: загружаем частицы один раз
+                    tsParticles.load("tsparticles", configSlide1).then(() => gsap.to('#tsparticles', { opacity: 1, duration: 1 }));
                 }
             });
 
-            // Открытие глаз
             tlIntro.to('.eyelid-top', { yPercent: -100, duration: 1.5, ease: "power4.inOut" }, 0.2)
                 .to('.eyelid-bottom', { yPercent: 100, duration: 1.5, ease: "power4.inOut" }, 0.2)
                 .fromTo('.glass-card.ui-element',
@@ -376,7 +407,7 @@
         const images = ["./Img/image.png", "./Img/ocean.jpg", "./Img/bubble_gum.jpg"];
         const textures = images.map(img => loader.load(img));
 
-        // Шейдер без хроматической аберрации
+        // Шейдер 
         const vertexShader = `
             varying vec2 vUv;
             void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
@@ -395,7 +426,6 @@
                 vec2 centered = uv - 0.5;
                 centered.y /= aspect;
                 
-                // Влияние скорости мыши на искажение
                 float velImpact = length(uVelocity) * 2.0;
                 float wave = sin(uv.y * 15.0 + time * 2.0) * (0.03 + velImpact) * sin(progress * 3.1415);
                 vec2 distortedUv = uv + vec2(wave, 0.0);
@@ -403,7 +433,6 @@
                 vec2 uv1 = (distortedUv - 0.5) * (1.0 - progress * 0.1) + 0.5;
                 vec2 uv2 = (distortedUv - 0.5) * (1.0 + (1.0 - progress) * 0.1) + 0.5;
 
-                // Чистые цвета без RGB сдвига
                 vec4 color1 = texture2D(texCurrent, uv1);
                 vec4 color2 = texture2D(texNext, uv2);
 
@@ -460,11 +489,19 @@
         const clock = new THREE.Clock();
         function render() {
             requestAnimationFrame(render);
+
+            if (!renderThreejs) return;
+
             const time = clock.getElapsedTime();
             uniforms.time.value = time;
 
             let dx = currentMouse.x - previousMouse.x;
             let dy = currentMouse.y - previousMouse.y;
+
+            if (currentSlide !== 0) {
+                dx = 0;
+                dy = 0;
+            }
 
             targetVelocityX += (dx - targetVelocityX) * 0.1;
             targetVelocityY += (dy - targetVelocityY) * 0.1;
@@ -477,19 +514,27 @@
 
             previousMouse.copy(currentMouse);
 
-            if (pMat.opacity > 0) {
+            renderer.render(scene, camera);
+
+            // Оптимизация: рендерим второй слой только если он реально видим
+            if (pMat.opacity > 0.01) {
                 pMesh.rotation.y = time * 0.02 + mouseVelocity.x * 2.0;
                 pMesh.rotation.x = time * 0.01 + mouseVelocity.y * 2.0;
 
                 const scale = 1.0 + length(mouseVelocity) * 5.0;
                 pMesh.scale.set(scale, scale, scale);
 
-                pCamera.position.x += ((clientMouseX / window.innerWidth - 0.5) * 2 - pCamera.position.x) * 0.05;
-                pCamera.position.y += (-(clientMouseY / window.innerHeight - 0.5) * 2 - pCamera.position.y) * 0.05;
-            }
+                let targetCamX = (clientMouseX / window.innerWidth - 0.5) * 2;
+                let targetCamY = -(clientMouseY / window.innerHeight - 0.5) * 2;
 
-            renderer.render(scene, camera);
-            if (pMat.opacity > 0) {
+                if (currentSlide !== 0) {
+                    targetCamX = 0;
+                    targetCamY = 0;
+                }
+
+                pCamera.position.x += (targetCamX - pCamera.position.x) * 0.05;
+                pCamera.position.y += (targetCamY - pCamera.position.y) * 0.05;
+
                 renderer.autoClear = false;
                 renderer.render(scene, pCamera);
                 renderer.autoClear = true;
@@ -516,9 +561,14 @@
             );
         }
 
-        // --- Card Interactions ---
+        // --- Card Interactions (Оптимизировано с gsap.quickTo) ---
         document.querySelectorAll('.glass-card').forEach(card => {
             if (!isMobile) {
+                const content = card.querySelector('.card-content');
+                // quickTo - мощная оптимизация для плавного следования за мышью без создания новых анимаций
+                const xTo = gsap.quickTo(content, "x", { duration: 0.5, ease: "power2.out" });
+                const yTo = gsap.quickTo(content, "y", { duration: 0.5, ease: "power2.out" });
+
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
@@ -527,14 +577,12 @@
                     card.style.setProperty('--mouse-x', `${x}px`);
                     card.style.setProperty('--mouse-y', `${y}px`);
 
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    gsap.to(card.querySelector('.card-content'), {
-                        x: (x - centerX) * 0.03, y: (y - centerY) * 0.03, duration: 0.5, ease: "power2.out"
-                    });
+                    xTo((x - rect.width / 2) * 0.03);
+                    yTo((y - rect.height / 2) * 0.03);
                 });
                 card.addEventListener('mouseleave', () => {
-                    gsap.to(card.querySelector('.card-content'), { x: 0, y: 0, duration: 0.5, ease: "power2.out" });
+                    xTo(0);
+                    yTo(0);
                 });
             }
         });
@@ -562,10 +610,6 @@
             dots[currentSlide].classList.remove('active');
             dots[nextIndex].classList.add('active');
 
-            uniforms.texCurrent.value = textures[currentSlide];
-            uniforms.texNext.value = textures[nextIndex];
-            uniforms.progress.value = 0.0;
-
             const tl = gsap.timeline({
                 onComplete: () => {
                     slides[currentSlide].classList.remove('active');
@@ -577,12 +621,40 @@
             });
 
             tl.to(slides[currentSlide].querySelector('.glass-card'), { opacity: 0, y: -20 * direction, duration: 0.6, ease: "power2.in" }, 0);
+
+            const webglCanvas = document.getElementById('webgl-canvas');
+            const particlesDiv = document.getElementById('tsparticles');
+
+            if (!renderThreejs) {
+                renderThreejs = true;
+                gsap.to(webglCanvas, { opacity: 1, duration: 1 }, 0);
+            }
+            uniforms.texCurrent.value = textures[currentSlide];
+            uniforms.texNext.value = textures[nextIndex];
+            uniforms.progress.value = 0.0;
             tl.to(uniforms.progress, { value: 1.0, duration: 1.5, ease: "power3.inOut" }, 0);
 
             if (nextIndex === 1) {
                 gsap.to(pMat, { opacity: 0.8, duration: 2, ease: "power2.out", delay: 0.5 });
             } else {
                 gsap.to(pMat, { opacity: 0, duration: 1, ease: "power2.in" });
+            }
+
+            // Оптимизация частиц: используем pause/play вместо удаления и пересоздания объекта
+            if (particlesDiv) {
+                const pInstance = tsParticles.domItem(0); // Получаем текущий инстанс
+
+                if (nextIndex === 0) {
+                    if (pInstance) pInstance.play(); // Включаем вычисления
+                    gsap.to(particlesDiv, { opacity: 1, duration: 1 });
+                } else {
+                    gsap.to(particlesDiv, {
+                        opacity: 0, duration: 0.5,
+                        onComplete: () => {
+                            if (pInstance) pInstance.pause(); // Ставим на паузу (освобождает процессор)
+                        }
+                    });
+                }
             }
 
             tl.set(slides[nextIndex], { className: "slide active" }, 0.6);
