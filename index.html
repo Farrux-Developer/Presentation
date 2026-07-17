@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetics of Reality | Site of the Year</title>
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
-    
+    <title>Aesthetics of Reality</title>
+
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext y='.9em' font-size='90'%3E✨%3C/text%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,600&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,600&family=Outfit:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
             --text-main: #ffffff;
@@ -18,14 +22,15 @@
             --accent: #ffb8d2;
             --glass-bg: rgba(10, 10, 12, 0.2);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body, html {
+        body,
+        html {
             width: 100vw;
             height: 100vh;
             font-family: 'Outfit', sans-serif;
@@ -39,50 +44,104 @@
         /* --- Кинематографичные Шторки --- */
         .eyelid {
             position: fixed;
-            left: 0; width: 100vw; height: 50vh;
+            left: 0;
+            width: 100vw;
+            height: 50vh;
             background-color: #050505;
             z-index: 99999;
             pointer-events: none;
             will-change: transform;
         }
-        .eyelid-top { top: 0; }
-        .eyelid-bottom { bottom: 0; }
 
-        .ui-element { opacity: 0; will-change: opacity; }
+        .eyelid-top {
+            top: 0;
+        }
+
+        .eyelid-bottom {
+            bottom: 0;
+        }
+
+        .ui-element {
+            opacity: 0;
+            will-change: opacity;
+        }
 
         /* --- Canvas & Noise --- */
         #webgl-canvas {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 1; pointer-events: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
         }
+
         .noise {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 100; opacity: 0.04;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.04;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* --- UI Elements --- */
         .scroll-indicator {
-            position: fixed; right: 4vw; top: 50%; transform: translateY(-50%);
-            display: flex; flex-direction: column; gap: 15px; z-index: 50;
-        }
-        .dot {
-            width: 4px; height: 4px; background: rgba(255,255,255,0.3);
-            border-radius: 50%; transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        .dot.active {
-            height: 20px; border-radius: 10px; background: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+            position: fixed;
+            right: 4vw;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 50;
         }
 
-        main { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
+        .dot {
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .dot.active {
+            height: 20px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        main {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+        }
 
         section {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex; align-items: center; padding: 0 12vw;
-            visibility: hidden; pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 12vw;
+            visibility: hidden;
+            pointer-events: none;
         }
-        section.active { visibility: visible; pointer-events: auto; }
+
+        section.active {
+            visibility: visible;
+            pointer-events: auto;
+        }
 
         /* --- Glass Card --- */
         .glass-card {
@@ -96,54 +155,112 @@
             border-radius: 1.5rem;
             padding: 4.5rem 4rem;
             max-width: 600px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
-            overflow: hidden; cursor: pointer;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            cursor: pointer;
             transform: translateZ(0);
             will-change: transform, opacity;
         }
 
         .glass-card::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             border-radius: inherit;
-            background: radial-gradient(
-                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(255, 255, 255, 0.08), transparent 40%
-            );
-            z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.5s ease;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(255, 255, 255, 0.08), transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
-        .glass-card:hover::before { opacity: 1; }
 
-        .card-content { position: relative; z-index: 1; will-change: transform; }
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+            will-change: transform;
+        }
 
         .tag {
-            font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em;
-            text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: block;
         }
+
         h2 {
-            font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
-            font-size: clamp(3.5rem, 6vw, 6rem); line-height: 1.05; margin-bottom: 1.5rem;
-            letter-spacing: -1px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-weight: 500;
+            font-size: clamp(3.5rem, 6vw, 6rem);
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
         }
-        .char { transform: translateY(100%); opacity: 0; display: inline-block; }
+
+        .char {
+            transform: translateY(100%);
+            opacity: 0;
+            display: inline-block;
+        }
+
         p {
-            font-family: 'Outfit', sans-serif; font-weight: 300;
-            font-size: clamp(1.05rem, 1.2vw, 1.2rem); line-height: 1.7; color: var(--text-muted);
-            opacity: 0; transform: translateY(20px);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 300;
+            font-size: clamp(1.05rem, 1.2vw, 1.2rem);
+            line-height: 1.7;
+            color: var(--text-muted);
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .hint {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            font-size: 10px; letter-spacing: 3px; color: rgba(255,255,255,0.4); text-transform: uppercase;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
         }
 
         @media (max-width: 768px) {
-            section { padding: 0 6vw; justify-content: center; }
-            .glass-card { padding: 3rem 2rem; max-width: 100%; text-align: center; }
-            .scroll-indicator { display: none; }
-            .hint { font-size: 8px; width: 100%; text-align: center; }
+            section {
+                padding: 0 6vw;
+                justify-content: center;
+            }
+
+            .glass-card {
+                padding: 3rem 2rem;
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .scroll-indicator {
+                display: none;
+            }
+
+            .hint {
+                font-size: 8px;
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Eyelids -->
@@ -166,7 +283,8 @@
                 <div class="card-content">
                     <span class="tag">01 // Aesthetics of Reality</span>
                     <h2 class="split">Magic of<br>Our World</h2>
-                    <p class="fade-text">Mind-blowing reality that will absolutely take your breath away. Dive deep into the unseen architecture of nature.</p>
+                    <p class="fade-text">Mind-blowing reality that will absolutely take your breath away. Dive deep into
+                        the unseen architecture of nature.</p>
                 </div>
             </div>
         </section>
@@ -176,7 +294,8 @@
                 <div class="card-content">
                     <span class="tag">02 // Vaadhoo, Maldives</span>
                     <h2 class="split">Sea of<br>Stars</h2>
-                    <p class="fade-text">At night, the beaches glow neon-blue. The water literally erupts in light due to bioluminescent phytoplankton, creating a liquid night sky.</p>
+                    <p class="fade-text">At night, the beaches glow neon-blue. The water literally erupts in light due
+                        to bioluminescent phytoplankton, creating a liquid night sky.</p>
                 </div>
             </div>
         </section>
@@ -186,7 +305,8 @@
                 <div class="card-content">
                     <span class="tag">03 // Lake Hillier, Australia</span>
                     <h2 class="split">Bubblegum<br>Lake</h2>
-                    <p class="fade-text">Looks as if someone poured millions of gallons of strawberry milkshake right onto an island. Pure, vivid, and surreal.</p>
+                    <p class="fade-text">Looks as if someone poured millions of gallons of strawberry milkshake right
+                        onto an island. Pure, vivid, and surreal.</p>
                 </div>
             </div>
         </section>
@@ -211,12 +331,12 @@
         let previousMouse = new THREE.Vector2(0, 0);
         let mouseVelocity = new THREE.Vector2(0, 0);
         let targetVelocityX = 0, targetVelocityY = 0;
-        
+
         let clientMouseX = window.innerWidth / 2;
         let clientMouseY = window.innerHeight / 2;
 
         window.addEventListener('mousemove', (e) => {
-            clientMouseX = e.clientX; 
+            clientMouseX = e.clientX;
             clientMouseY = e.clientY;
             currentMouse.x = e.clientX / window.innerWidth;
             currentMouse.y = 1.0 - (e.clientY / window.innerHeight);
@@ -226,15 +346,15 @@
         const canvas = document.getElementById('webgl-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        
-        const renderer = new THREE.WebGLRenderer({ 
-            canvas, antialias: false, alpha: false, powerPreference: "high-performance" 
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas, antialias: false, alpha: false, powerPreference: "high-performance"
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
         const manager = new THREE.LoadingManager();
-        
+
         manager.onLoad = () => {
             const tlIntro = gsap.timeline({
                 onComplete: () => {
@@ -245,11 +365,11 @@
 
             // Открытие глаз
             tlIntro.to('.eyelid-top', { yPercent: -100, duration: 1.5, ease: "power4.inOut" }, 0.2)
-                   .to('.eyelid-bottom', { yPercent: 100, duration: 1.5, ease: "power4.inOut" }, 0.2)
-                   .fromTo('.glass-card.ui-element', 
-                        { scale: 0.95, opacity: 0 }, 
-                        { scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" }, 0.5)
-                   .to('.ui-element:not(.glass-card)', { opacity: 1, duration: 1, ease: "power2.out" }, 0.8);
+                .to('.eyelid-bottom', { yPercent: 100, duration: 1.5, ease: "power4.inOut" }, 0.2)
+                .fromTo('.glass-card.ui-element',
+                    { scale: 0.95, opacity: 0 },
+                    { scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" }, 0.5)
+                .to('.ui-element:not(.glass-card)', { opacity: 1, duration: 1, ease: "power2.out" }, 0.8);
         };
 
         const loader = new THREE.TextureLoader(manager);
@@ -318,18 +438,18 @@
 
         const pCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
         pCamera.position.z = 5;
-        
+
         const pGeo = new THREE.BufferGeometry();
-        const pCount = isMobile ? 250 : 500; 
+        const pCount = isMobile ? 250 : 500;
         const pPos = new Float32Array(pCount * 3);
-        for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random() - 0.5) * 15;
+        for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 15;
         pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-        
-        const pMat = new THREE.PointsMaterial({ 
-            size: 0.15, 
+
+        const pMat = new THREE.PointsMaterial({
+            size: 0.15,
             map: createGlowTexture(),
-            transparent: true, 
-            opacity: 0.0, 
+            transparent: true,
+            opacity: 0.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
@@ -345,22 +465,22 @@
 
             let dx = currentMouse.x - previousMouse.x;
             let dy = currentMouse.y - previousMouse.y;
-            
+
             targetVelocityX += (dx - targetVelocityX) * 0.1;
             targetVelocityY += (dy - targetVelocityY) * 0.1;
-            
+
             targetVelocityX *= 0.9;
             targetVelocityY *= 0.9;
 
             mouseVelocity.set(targetVelocityX, targetVelocityY);
             uniforms.uVelocity.value.copy(mouseVelocity);
-            
+
             previousMouse.copy(currentMouse);
-            
-            if(pMat.opacity > 0) {
+
+            if (pMat.opacity > 0) {
                 pMesh.rotation.y = time * 0.02 + mouseVelocity.x * 2.0;
                 pMesh.rotation.x = time * 0.01 + mouseVelocity.y * 2.0;
-                
+
                 const scale = 1.0 + length(mouseVelocity) * 5.0;
                 pMesh.scale.set(scale, scale, scale);
 
@@ -369,7 +489,7 @@
             }
 
             renderer.render(scene, camera);
-            if(pMat.opacity > 0) {
+            if (pMat.opacity > 0) {
                 renderer.autoClear = false;
                 renderer.render(scene, pCamera);
                 renderer.autoClear = true;
@@ -386,8 +506,8 @@
             const p = slide.querySelectorAll('.fade-text');
             const tag = slide.querySelectorAll('.tag');
 
-            gsap.fromTo(chars, 
-                { y: 100, opacity: 0 }, 
+            gsap.fromTo(chars,
+                { y: 100, opacity: 0 },
                 { y: 0, opacity: 1, duration: 1, stagger: 0.02, ease: "power4.out", delay: 0.1 }
             );
             gsap.fromTo([tag, p],
@@ -398,12 +518,12 @@
 
         // --- Card Interactions ---
         document.querySelectorAll('.glass-card').forEach(card => {
-            if(!isMobile) {
+            if (!isMobile) {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    
+
                     card.style.setProperty('--mouse-x', `${x}px`);
                     card.style.setProperty('--mouse-y', `${y}px`);
 
@@ -421,24 +541,24 @@
 
         // --- Scroll & Swipe Logic ---
         window.addEventListener('wheel', (e) => {
-            if(isAnimating) return;
-            if(e.deltaY > 50 && currentSlide < slides.length - 1) changeSlide(currentSlide + 1);
-            else if(e.deltaY < -50 && currentSlide > 0) changeSlide(currentSlide - 1);
+            if (isAnimating) return;
+            if (e.deltaY > 50 && currentSlide < slides.length - 1) changeSlide(currentSlide + 1);
+            else if (e.deltaY < -50 && currentSlide > 0) changeSlide(currentSlide - 1);
         });
 
         let touchStartY = 0;
         window.addEventListener('touchstart', e => touchStartY = e.touches[0].clientY, { passive: true });
         window.addEventListener('touchend', e => {
-            if(isAnimating) return;
+            if (isAnimating) return;
             const diff = touchStartY - e.changedTouches[0].clientY;
-            if(diff > 50 && currentSlide < slides.length - 1) changeSlide(currentSlide + 1);
-            else if(diff < -50 && currentSlide > 0) changeSlide(currentSlide - 1);
+            if (diff > 50 && currentSlide < slides.length - 1) changeSlide(currentSlide + 1);
+            else if (diff < -50 && currentSlide > 0) changeSlide(currentSlide - 1);
         });
 
         function changeSlide(nextIndex) {
             isAnimating = true;
             const direction = nextIndex > currentSlide ? 1 : -1;
-            
+
             dots[currentSlide].classList.remove('active');
             dots[nextIndex].classList.add('active');
 
@@ -458,16 +578,16 @@
 
             tl.to(slides[currentSlide].querySelector('.glass-card'), { opacity: 0, y: -20 * direction, duration: 0.6, ease: "power2.in" }, 0);
             tl.to(uniforms.progress, { value: 1.0, duration: 1.5, ease: "power3.inOut" }, 0);
-            
-            if(nextIndex === 1) {
+
+            if (nextIndex === 1) {
                 gsap.to(pMat, { opacity: 0.8, duration: 2, ease: "power2.out", delay: 0.5 });
             } else {
                 gsap.to(pMat, { opacity: 0, duration: 1, ease: "power2.in" });
             }
 
             tl.set(slides[nextIndex], { className: "slide active" }, 0.6);
-            tl.fromTo(slides[nextIndex].querySelector('.glass-card'), 
-                { opacity: 0, y: 50 * direction }, 
+            tl.fromTo(slides[nextIndex].querySelector('.glass-card'),
+                { opacity: 0, y: 50 * direction },
                 { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, 1.0);
         }
 
@@ -475,20 +595,20 @@
         let holdTimer, isExploring = false;
         document.querySelectorAll('.glass-card').forEach(card => {
             card.addEventListener(isMobile ? 'touchstart' : 'mousedown', () => {
-                if(isAnimating) return;
+                if (isAnimating) return;
                 holdTimer = setTimeout(() => {
                     isExploring = true;
                     gsap.to('.glass-card, .scroll-indicator, .hint', { opacity: 0, duration: 1, ease: "power2.inOut" });
-                    if(currentSlide === 1) gsap.to(pMat, { opacity: 0, duration: 1 });
+                    if (currentSlide === 1) gsap.to(pMat, { opacity: 0, duration: 1 });
                 }, 600);
             }, { passive: true });
 
             card.addEventListener(isMobile ? 'touchend' : 'mouseup', () => {
                 clearTimeout(holdTimer);
-                if(isExploring) {
+                if (isExploring) {
                     isExploring = false;
                     gsap.to('.glass-card, .scroll-indicator, .hint', { opacity: 1, duration: 1, ease: "power2.inOut" });
-                    if(currentSlide === 1) gsap.to(pMat, { opacity: 0.8, duration: 1 });
+                    if (currentSlide === 1) gsap.to(pMat, { opacity: 0.8, duration: 1 });
                 }
             }, { passive: true });
         });
@@ -508,4 +628,5 @@
         });
     </script>
 </body>
+
 </html>
